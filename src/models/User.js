@@ -1,9 +1,14 @@
 import { Model } from 'sequelize';
+import * as bcrypt from 'bcryptjs';
 
 export default (sequelize, DataTypes) => {
   class User extends Model {
-    // eslint-disable-next-line no-unused-vars
-    static associate(models) {}
+    static associate(models) {
+      this.hasMany(models.Address, {
+        foreignKey: 'user_id',
+        as: 'address',
+      });
+    }
   }
   User.init(
     {
@@ -14,6 +19,12 @@ export default (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'User',
+      hooks: {
+        beforeCreate: (user) => {
+          const salt = bcrypt.genSaltSync();
+          user.password = bcrypt.hashSync(user.password, salt);
+        },
+      },
     },
   );
   return User;
