@@ -8,6 +8,11 @@ export default (sequelize, DataTypes) => {
         foreignKey: 'user_id',
         as: 'address',
       });
+      this.belongsToMany(models.Course, {
+        foreignKey: 'user_id',
+        through: 'Users_Courses',
+        as: 'courses',
+      });
     }
   }
   User.init(
